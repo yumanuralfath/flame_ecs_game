@@ -100,6 +100,7 @@ class AsteroidGame extends OxygenGame {
 
   void start() {
     overlays.remove('MainMenu');
+    overlays.add('HUD');
     isStarted = true;
     isGameOver = false;
     score = 0;
@@ -111,12 +112,14 @@ class AsteroidGame extends OxygenGame {
     if (!isStarted || isGameOver) return;
     paused = true;
     pointerTarget = null; // Clear pointer target on pause
+    overlays.remove('HUD');
     overlays.add('PauseMenu');
   }
 
   void resume() {
     paused = false;
     overlays.remove('PauseMenu');
+    overlays.add('HUD');
   }
 
   void addScore(int points) => score += points;
@@ -126,12 +129,14 @@ class AsteroidGame extends OxygenGame {
     isGameOver = true;
     pointerTarget = null;
     keysPressed.clear();
+    overlays.remove('HUD');
     overlays.add('GameOver');
   }
 
   void restart() {
     overlays.remove('GameOver');
     overlays.remove('PauseMenu');
+    overlays.add('HUD');
     isGameOver = false;
     score = 0;
     pointerTarget = null;

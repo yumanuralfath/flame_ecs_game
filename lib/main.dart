@@ -73,6 +73,7 @@ class _GameAppState extends State<GameApp> {
                   child: GameWidget<AsteroidGame>(
                     game: _game,
                     overlayBuilderMap: {
+                      'HUD': (context, game) => HUD(game: game),
                       'MainMenu': (context, game) => MainMenu(
                         game: game,
                         onStart: () {
@@ -102,23 +103,6 @@ class _GameAppState extends State<GameApp> {
                   ),
                 ),
               ),
-              // Pause button UI - Higher in Stack so it blocks gestures
-              Positioned(
-                top: 10,
-                right: 10,
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.pause,
-                    color: Colors.white70,
-                    size: 32,
-                  ),
-                  onPressed: () {
-                    _game.pause();
-                    // Focus doesn't matter much while paused,
-                    // but we'll request it on resume.
-                  },
-                ),
-              ),
             ],
           ),
         ),
@@ -129,6 +113,27 @@ class _GameAppState extends State<GameApp> {
 
 extension OffsetToVector2 on Offset {
   Vector2 toVector2() => Vector2(dx, dy);
+}
+
+class HUD extends StatelessWidget {
+  final AsteroidGame game;
+  const HUD({super.key, required this.game});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: IconButton(
+          icon: const Icon(Icons.pause, color: Colors.white70, size: 32),
+          onPressed: () {
+            game.pause();
+          },
+        ),
+      ),
+    );
+  }
 }
 
 class MainMenu extends StatelessWidget {
