@@ -1,4 +1,5 @@
 import 'package:flame_oxygen/flame_oxygen.dart';
+import '../components/star_component.dart';
 
 class CleaningSystem extends System {
   @override
@@ -8,9 +9,13 @@ class CleaningSystem extends System {
   void execute(double dt) {}
 
   void clearAllEntities() {
-    // Oxygen does not allow empty filters in createQuery.
-    // We use Has<PositionComponent>() as a catch-all since all our entities have it.
-    final query = createQuery([Has<PositionComponent>()]);
+    // We only want to clear gameplay entities, not the background stars.
+    // So we query for entities that DON'T have a StarComponent.
+    final query = createQuery([
+      Has<PositionComponent>(),
+      HasNot<StarComponent>(),
+    ]);
+
     final entities = query.entities.toList();
     for (final entity in entities) {
       world!.entityManager.removeEntity(entity);

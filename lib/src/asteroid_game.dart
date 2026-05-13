@@ -7,15 +7,23 @@ import 'package:flutter/services.dart';
 import 'components/color_component.dart';
 import 'components/tag_component.dart';
 import 'components/velocity_component.dart';
+import 'components/star_component.dart';
+import 'components/bullet_component.dart';
+import 'components/explosion_component.dart';
+import 'components/powerup_component.dart';
 import 'entities/player_entity.dart';
 import 'systems/bounds_system.dart';
 import 'systems/collision_system.dart';
+import 'systems/bullet_collision_system.dart';
 import 'systems/hud_system.dart';
 import 'systems/input_system.dart';
 import 'systems/move_system.dart';
 import 'systems/render_system.dart';
+import 'systems/background_render_system.dart';
 import 'systems/spawn_system.dart';
 import 'systems/cleaning_system.dart';
+import 'systems/explosion_system.dart';
+import 'systems/powerup_system.dart';
 
 class AsteroidGame extends OxygenGame {
   // ── public state ──────────────────────────────────────────────────────
@@ -32,9 +40,7 @@ class AsteroidGame extends OxygenGame {
   final Set<LogicalKeyboardKey> keysPressed = {};
 
   // ── private ───────────────────────────────────────────────────────────
-  final _stars = <_Star>[];
   final _rng = Random();
-  final _starPaint = Paint()..color = const Color(0xFFFFFFFF);
 
   // ── OxygenGame lifecycle ──────────────────────────────────────────────
 
@@ -43,6 +49,7 @@ class AsteroidGame extends OxygenGame {
 
   @override
   Future<void> init() async {
+    // Register Components
     world.registerComponent<PositionComponent, Vector2>(
       () => PositionComponent(),
     );
@@ -52,7 +59,13 @@ class AsteroidGame extends OxygenGame {
     );
     world.registerComponent<ColorComponent, Paint>(() => ColorComponent());
     world.registerComponent<TagComponent, String>(() => TagComponent());
+    world.registerComponent<StarComponent, double>(() => StarComponent());
+    world.registerComponent<BulletComponent, void>(() => BulletComponent());
+    world.registerComponent<ExplosionComponent, double>(() => ExplosionComponent());
+    world.registerComponent<PowerUpComponent, PowerUpType>(() => PowerUpComponent());
+    world.registerComponent<PlayerStatsComponent, void>(() => PlayerStatsComponent());
 
+    // Register Systems
     _cleaningSystem = CleaningSystem();
     world.registerSystem(_cleaningSystem);
     world.registerSystem(InputSystem());
@@ -60,31 +73,32 @@ class AsteroidGame extends OxygenGame {
     world.registerSystem(SpawnSystem());
     world.registerSystem(BoundsSystem());
     world.registerSystem(CollisionSystem());
-    world.registerSystem(GameRenderSystem());
-    world.registerSystem(HudSystem());
+    world.registerSystem(BulletCollisionSystem());
+    world.registerSystem(ExplosionSystem());
+    world.registerSystem(PowerUpSystem());
+    world.registerSystem(BackgroundRenderSystem()); // Render stars first
+    world.registerSystem(GameRenderSystem()); // Then game entities
+    world.registerSystem(HudSystem()); // Then UI
   }
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    _spawnStars();
+    _spawnStarEntities();
     overlays.add('MainMenu');
     paused = true;
   }
 
   // ── helpers ───────────────────────────────────────────────────────────
 
-  void _spawnStars() {
-    _stars.clear();
+  void _spawnStarEntities() {
     for (int i = 0; i < 80; i++) {
-      _stars.add(
-        _Star(
-          x: _rng.nextDouble() * size.x,
-          y: _rng.nextDouble() * size.y,
-          radius: 0.5 + _rng.nextDouble() * 1.5,
-          opacity: 0.3 + _rng.nextDouble() * 0.7,
-        ),
-      );
+      world.createEntity()
+        ..add<PositionComponent, Vector2>(
+          Vector2(_rng.nextDouble() * size.x, _rng.nextDouble() * size.y),
+        )
+        ..add<SizeComponent, Vector2>(Vector2(0.5 + _rng.nextDouble() * 1.5, 0))
+        ..add<StarComponent, double>(0.3 + _rng.nextDouble() * 0.7);
     }
   }
 
@@ -111,7 +125,7 @@ class AsteroidGame extends OxygenGame {
   void pause() {
     if (!isStarted || isGameOver) return;
     paused = true;
-    pointerTarget = null; // Clear pointer target on pause
+    pointerTarget = null;
     overlays.remove('HUD');
     overlays.add('PauseMenu');
   }
@@ -146,23 +160,4 @@ class AsteroidGame extends OxygenGame {
     _cleaningSystem.clearAllEntities();
     spawnPlayer();
   }
-
-  @override
-  void render(Canvas canvas) {
-    for (final star in _stars) {
-      _starPaint.color = Color.fromRGBO(255, 255, 255, star.opacity);
-      canvas.drawCircle(Offset(star.x, star.y), star.radius, _starPaint);
-    }
-    super.render(canvas);
-  }
-}
-
-class _Star {
-  final double x, y, radius, opacity;
-  const _Star({
-    required this.x,
-    required this.y,
-    required this.radius,
-    required this.opacity,
-  });
 }

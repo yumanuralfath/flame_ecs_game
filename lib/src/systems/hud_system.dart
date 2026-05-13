@@ -2,15 +2,41 @@ import 'dart:ui';
 import 'package:flame_oxygen/flame_oxygen.dart';
 import 'package:test_ecs/src/asteroid_game.dart';
 
-/// Draws the HUD (score) directly onto the canvas each frame.
-class HudSystem extends System with RenderSystem, GameRef<AsteroidGame> {
+/// Draws the HUD (score and FPS) directly onto the canvas each frame.
+class HudSystem extends System with RenderSystem, UpdateSystem, GameRef<AsteroidGame> {
+  double _fps = 0;
+  double _timer = 0;
+  int _frameCount = 0;
+
   @override
   void init() {}
+
+  @override
+  void update(double dt) {
+    _timer += dt;
+    _frameCount++;
+
+    if (_timer >= 0.5) {
+      _fps = _frameCount / _timer;
+      _timer = 0;
+      _frameCount = 0;
+    }
+  }
 
   @override
   void render(Canvas canvas) {
     // Score top-left
     _drawText(canvas, 'Score: ${game!.score}', 16, 12);
+
+    // FPS top-middle
+    _drawTextCentered(
+      canvas,
+      'FPS: ${_fps.toStringAsFixed(1)}',
+      game!.size.x / 2,
+      12,
+      fontSize: 16,
+      opacity: 0.8,
+    );
 
     // Tip at bottom centre
     if (!game!.isGameOver) {
