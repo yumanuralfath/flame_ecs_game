@@ -1,6 +1,6 @@
 import 'package:flame_oxygen/flame_oxygen.dart';
-import 'package:test_ecs/src/components/tag_component.dart';
-import 'package:test_ecs/src/asteroid_game.dart';
+import 'package:test_ecs/src/shared/components/tag_component.dart';
+import 'package:test_ecs/src/core/asteroid_game.dart';
 
 /// Removes asteroid entities once they scroll past the bottom of the screen,
 /// and awards one point per escaped asteroid.

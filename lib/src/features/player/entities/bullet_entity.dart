@@ -1,10 +1,10 @@
 import 'dart:ui';
 import 'package:flame/components.dart' hide World, PositionComponent;
 import 'package:flame_oxygen/flame_oxygen.dart';
-import '../components/color_component.dart';
-import '../components/tag_component.dart';
-import '../components/velocity_component.dart';
-import '../components/bullet_component.dart';
+import 'package:test_ecs/src/shared/components/color_component.dart';
+import 'package:test_ecs/src/shared/components/tag_component.dart';
+import 'package:test_ecs/src/shared/components/velocity_component.dart';
+import 'package:test_ecs/src/features/player/components/bullet_component.dart';
 
 class BulletEntity {
   static void create(

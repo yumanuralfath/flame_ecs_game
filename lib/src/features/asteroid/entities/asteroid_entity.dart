@@ -2,9 +2,9 @@ import 'dart:math';
 import 'package:flame/components.dart' hide World, PositionComponent;
 import 'package:flame_oxygen/flame_oxygen.dart';
 import 'package:flutter/material.dart';
-import '../components/color_component.dart';
-import '../components/tag_component.dart';
-import '../components/velocity_component.dart';
+import 'package:test_ecs/src/shared/components/color_component.dart';
+import 'package:test_ecs/src/shared/components/tag_component.dart';
+import 'package:test_ecs/src/shared/components/velocity_component.dart';
 
 class AsteroidEntity {
   static final _rng = Random();

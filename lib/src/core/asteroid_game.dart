@@ -1,29 +1,17 @@
 import 'dart:math';
-import 'dart:ui';
-import 'package:flame/components.dart' hide PositionComponent;
+import 'package:flame/components.dart' hide PositionComponent, World;
 import 'package:flame_oxygen/flame_oxygen.dart';
 import 'package:flutter/services.dart';
 
-import 'components/color_component.dart';
-import 'components/tag_component.dart';
-import 'components/velocity_component.dart';
-import 'components/star_component.dart';
-import 'components/bullet_component.dart';
-import 'components/explosion_component.dart';
-import 'components/powerup_component.dart';
-import 'entities/player_entity.dart';
-import 'systems/bounds_system.dart';
-import 'systems/collision_system.dart';
-import 'systems/bullet_collision_system.dart';
-import 'systems/hud_system.dart';
-import 'systems/input_system.dart';
-import 'systems/move_system.dart';
-import 'systems/render_system.dart';
-import 'systems/background_render_system.dart';
-import 'systems/spawn_system.dart';
-import 'systems/cleaning_system.dart';
-import 'systems/explosion_system.dart';
-import 'systems/powerup_system.dart';
+import 'package:test_ecs/src/features/player/entities/player_entity.dart';
+import 'package:test_ecs/src/features/fx/components/star_component.dart';
+import 'package:test_ecs/src/shared/systems/cleaning_system.dart';
+import 'package:test_ecs/src/core/game_feature.dart';
+import 'package:test_ecs/src/shared/core_module.dart';
+import 'package:test_ecs/src/features/asteroid/asteroid_module.dart';
+import 'package:test_ecs/src/features/player/player_module.dart';
+import 'package:test_ecs/src/features/fx/effects_module.dart';
+import 'package:test_ecs/src/features/render/render_module.dart';
 
 class AsteroidGame extends OxygenGame {
   // ── public state ──────────────────────────────────────────────────────
@@ -42,6 +30,15 @@ class AsteroidGame extends OxygenGame {
   // ── private ───────────────────────────────────────────────────────────
   final _rng = Random();
 
+  /// List of modular features that define the game's components and systems.
+  final List<GameFeature> _features = [
+    CoreModule(),
+    AsteroidModule(),
+    PlayerModule(),
+    EffectsModule(),
+    RenderModule(),
+  ];
+
   // ── OxygenGame lifecycle ──────────────────────────────────────────────
 
   @override
@@ -49,36 +46,15 @@ class AsteroidGame extends OxygenGame {
 
   @override
   Future<void> init() async {
-    // Register Components
-    world.registerComponent<PositionComponent, Vector2>(
-      () => PositionComponent(),
-    );
-    world.registerComponent<SizeComponent, Vector2>(() => SizeComponent());
-    world.registerComponent<VelocityComponent, Vector2>(
-      () => VelocityComponent(),
-    );
-    world.registerComponent<ColorComponent, Paint>(() => ColorComponent());
-    world.registerComponent<TagComponent, String>(() => TagComponent());
-    world.registerComponent<StarComponent, double>(() => StarComponent());
-    world.registerComponent<BulletComponent, void>(() => BulletComponent());
-    world.registerComponent<ExplosionComponent, double>(() => ExplosionComponent());
-    world.registerComponent<PowerUpComponent, PowerUpType>(() => PowerUpComponent());
-    world.registerComponent<PlayerStatsComponent, void>(() => PlayerStatsComponent());
-
-    // Register Systems
     _cleaningSystem = CleaningSystem();
+
+    // Initialize all modular features
+    for (final feature in _features) {
+      feature.register(world);
+    }
+
+    // Register cleaning system manually to keep a reference
     world.registerSystem(_cleaningSystem);
-    world.registerSystem(InputSystem());
-    world.registerSystem(MoveSystem());
-    world.registerSystem(SpawnSystem());
-    world.registerSystem(BoundsSystem());
-    world.registerSystem(CollisionSystem());
-    world.registerSystem(BulletCollisionSystem());
-    world.registerSystem(ExplosionSystem());
-    world.registerSystem(PowerUpSystem());
-    world.registerSystem(BackgroundRenderSystem()); // Render stars first
-    world.registerSystem(GameRenderSystem()); // Then game entities
-    world.registerSystem(HudSystem()); // Then UI
   }
 
   @override

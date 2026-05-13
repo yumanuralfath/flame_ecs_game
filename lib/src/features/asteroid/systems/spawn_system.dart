@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'package:flame/components.dart' hide World, PositionComponent;
 import 'package:flame_oxygen/flame_oxygen.dart';
-import 'package:test_ecs/src/asteroid_game.dart';
-import 'package:test_ecs/src/entities/asteroid_entity.dart';
+import 'package:test_ecs/src/core/asteroid_game.dart';
+import 'package:test_ecs/src/features/asteroid/entities/asteroid_entity.dart';
 
 /// Spawns asteroid entities at a rate that increases with the score.
 class SpawnSystem extends System with UpdateSystem, GameRef<AsteroidGame> {

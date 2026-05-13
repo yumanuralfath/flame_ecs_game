@@ -1,7 +1,7 @@
 import 'package:flame_oxygen/flame_oxygen.dart';
-import 'package:test_ecs/src/asteroid_game.dart';
-import 'package:test_ecs/src/components/tag_component.dart';
-import 'package:test_ecs/src/components/velocity_component.dart';
+import 'package:test_ecs/src/core/asteroid_game.dart';
+import 'package:test_ecs/src/shared/components/tag_component.dart';
+import 'package:test_ecs/src/shared/components/velocity_component.dart';
 
 /// Updates entity positions based on their velocity each frame.
 /// Also handles boundary clamping for the player.

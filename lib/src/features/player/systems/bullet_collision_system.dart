@@ -2,14 +2,14 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:flame/components.dart' hide World, PositionComponent;
 import 'package:flame_oxygen/flame_oxygen.dart';
-import 'package:test_ecs/src/asteroid_game.dart';
-import 'package:test_ecs/src/components/tag_component.dart';
-import 'package:test_ecs/src/components/bullet_component.dart';
-import 'package:test_ecs/src/components/explosion_component.dart';
-import 'package:test_ecs/src/components/color_component.dart';
-import 'package:test_ecs/src/components/velocity_component.dart';
-import 'package:test_ecs/src/entities/powerup_entity.dart';
-import 'package:test_ecs/src/components/powerup_component.dart';
+import 'package:test_ecs/src/core/asteroid_game.dart';
+import 'package:test_ecs/src/shared/components/tag_component.dart';
+import 'package:test_ecs/src/features/player/components/bullet_component.dart';
+import 'package:test_ecs/src/features/fx/components/explosion_component.dart';
+import 'package:test_ecs/src/shared/components/color_component.dart';
+import 'package:test_ecs/src/shared/components/velocity_component.dart';
+import 'package:test_ecs/src/features/player/entities/powerup_entity.dart';
+import 'package:test_ecs/src/features/player/components/powerup_component.dart';
 
 class BulletCollisionSystem extends System
     with UpdateSystem, GameRef<AsteroidGame> {

@@ -1,6 +1,6 @@
 import 'package:flame_oxygen/flame_oxygen.dart';
-import 'package:test_ecs/src/components/tag_component.dart';
-import 'package:test_ecs/src/asteroid_game.dart';
+import 'package:test_ecs/src/shared/components/tag_component.dart';
+import 'package:test_ecs/src/core/asteroid_game.dart';
 
 /// Simple circle-circle collision detection between the player and asteroids.
 class CollisionSystem extends System with UpdateSystem, GameRef<AsteroidGame> {

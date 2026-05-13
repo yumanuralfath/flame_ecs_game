@@ -1,9 +1,10 @@
 import 'dart:ui';
 import 'package:flame_oxygen/flame_oxygen.dart';
-import 'package:test_ecs/src/asteroid_game.dart';
+import 'package:test_ecs/src/core/asteroid_game.dart';
 
 /// Draws the HUD (score and FPS) directly onto the canvas each frame.
-class HudSystem extends System with RenderSystem, UpdateSystem, GameRef<AsteroidGame> {
+class HudSystem extends System
+    with RenderSystem, UpdateSystem, GameRef<AsteroidGame> {
   double _fps = 0;
   double _timer = 0;
   int _frameCount = 0;

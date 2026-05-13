@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flame_oxygen/flame_oxygen.dart';
-import '../components/star_component.dart';
+import 'package:test_ecs/src/features/fx/components/star_component.dart';
 
 class BackgroundRenderSystem extends System with RenderSystem {
   Query? _starQuery;

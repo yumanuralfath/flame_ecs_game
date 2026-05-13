@@ -1,5 +1,5 @@
 import 'package:flame_oxygen/flame_oxygen.dart';
-import '../components/explosion_component.dart';
+import 'package:test_ecs/src/features/fx/components/explosion_component.dart';
 
 class ExplosionSystem extends System with UpdateSystem {
   Query? _query;
